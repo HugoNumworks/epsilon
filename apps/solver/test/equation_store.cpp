@@ -2,6 +2,7 @@
 #include "helpers.h"
 
 QUIZ_CASE(equation_solve) {
+  Poincare::Preferences::sharedPreferences()->setComplexFormat(Poincare::Preferences::ComplexFormat::Cartesian);
   assert_solves_to_error("x+y+z+a+b+c+d=0", TooManyVariables);
   assert_solves_to_error("x^2+y=0", NonLinearSystem);
   assert_solves_to_error("cos(x)=0", RequireApproximateSolution);
