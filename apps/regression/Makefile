@@ -42,8 +42,8 @@ apps_src += $(app_regression_src)
 
 i18n_files += $(call i18n_with_universal_for,regression/base)
 
-tests_src += $(addprefix apps/regression/test/,\
-  model.cpp\
-)
+# tests_src += $(addprefix apps/regression/test/,\
+#   model.cpp\
+# )
 
 $(eval $(call depends_on_image,apps/regression/app.cpp,apps/regression/regression_icon.png))

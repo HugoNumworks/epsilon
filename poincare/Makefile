@@ -156,32 +156,7 @@ poincare_src += $(addprefix poincare/src/parsing/,\
 )
 
 tests_src += $(addprefix poincare/test/,\
-  tree/tree_handle.cpp\
-  tree/helpers.cpp\
-  approximation.cpp\
-  arithmetic.cpp\
-  context.cpp\
-  erf_inv.cpp \
-  expression.cpp\
-  expression_order.cpp\
-  expression_properties.cpp\
-  expression_serialization.cpp\
-  expression_to_layout.cpp\
-  function_solver.cpp\
   helper.cpp\
-  helpers.cpp\
-  ieee754.cpp\
-  integer.cpp\
-  layout.cpp\
-  layout_cursor.cpp\
-  layout_serialization.cpp\
-  layout_to_expression.cpp\
-  parsing.cpp\
-  print_float.cpp\
-  print_int.cpp\
-  rational.cpp\
-  regularized_incomplete_beta_function.cpp \
-  simplification.cpp\
 )
 
 ifeq ($(DEBUG),1)

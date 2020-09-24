@@ -38,14 +38,14 @@ ion_src += $(addprefix ion/src/shared/, \
 
 ion_src += ion/src/external/lz4/lz4.c
 
-tests_src += $(addprefix ion/test/,\
-  crc32.cpp\
-  events.cpp\
-  keyboard.cpp\
-  storage.cpp\
-  utf8_decoder.cpp\
-  utf8_helper.cpp\
-)
+# tests_src += $(addprefix ion/test/,\
+#   crc32.cpp\
+#   events.cpp\
+#   keyboard.cpp\
+#   storage.cpp\
+#   utf8_decoder.cpp\
+#   utf8_helper.cpp\
+# )
 
 ifdef ION_STORAGE_LOG
 SFLAGS += -DION_STORAGE_LOG=1

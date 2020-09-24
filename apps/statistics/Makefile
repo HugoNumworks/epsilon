@@ -31,8 +31,8 @@ apps_src += $(app_statistics_src)
 
 i18n_files += $(call i18n_without_universal_for,statistics/base)
 
-tests_src += $(addprefix apps/statistics/test/,\
-  store.cpp\
-)
+# tests_src += $(addprefix apps/statistics/test/,\
+#   store.cpp\
+# )
 
 $(eval $(call depends_on_image,apps/statistics/app.cpp,apps/statistics/stat_icon.png))

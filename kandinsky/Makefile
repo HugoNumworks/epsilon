@@ -19,11 +19,11 @@ kandinsky_src += $(addprefix kandinsky/fonts/, \
   SmallFont.ttf \
 )
 
-tests_src += $(addprefix kandinsky/test/,\
-  color.cpp\
-  font.cpp\
-  rect.cpp\
-)
+# tests_src += $(addprefix kandinsky/test/,\
+#   color.cpp\
+#   font.cpp\
+#   rect.cpp\
+# )
 
 code_points = kandinsky/fonts/code_points.h
 

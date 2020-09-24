@@ -77,12 +77,12 @@ endif
 include ion/Makefile
 include kandinsky/Makefile
 include poincare/Makefile
-include python/Makefile
+# include python/Makefile
 include escher/Makefile
 # Executable Makefiles
 include apps/Makefile
 include build/struct_layout/Makefile
-include build/scenario/Makefile
+# include build/scenario/Makefile
 include quiz/Makefile # Quiz needs to be included at the end
 
 all_src = $(apps_src) $(escher_src) $(ion_src) $(kandinsky_src) $(liba_src) $(libaxx_src) $(poincare_src) $(python_src) $(runner_src) $(ion_device_flasher_src) $(ion_device_bench_src) $(tests_src)

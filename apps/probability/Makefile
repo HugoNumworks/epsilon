@@ -42,11 +42,11 @@ apps_src += $(app_probability_src)
 
 i18n_files += $(call i18n_with_universal_for,probability/base)
 
-tests_src += $(addprefix apps/probability/test/,\
-  hypergeometric_function.cpp\
-  distributions.cpp\
-  regularized_gamma.cpp \
-)
+# tests_src += $(addprefix apps/probability/test/,\
+#   hypergeometric_function.cpp\
+#   distributions.cpp\
+#   regularized_gamma.cpp \
+# )
 
 # Image dependencies
 

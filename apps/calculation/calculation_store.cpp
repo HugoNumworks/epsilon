@@ -5,6 +5,8 @@
 #include <poincare/undefined.h>
 #include "../exam_mode_configuration.h"
 #include <assert.h>
+#include <quiz.h>
+
 
 using namespace Poincare;
 using namespace Shared;
@@ -53,58 +55,71 @@ ExpiringPointer<Calculation> CalculationStore::calculationAtIndex(int i) {
 ExpiringPointer<Calculation> CalculationStore::push(const char * text, Context * context, HeightComputer heightComputer) {
   /* Compute ans now, before the buffer is slided and before the calculation
    * might be deleted */
+  quiz_print("#e\n");
   Expression ans = ansExpression(context);
-
+  quiz_print("#a\n");
   // Prepare the buffer for the new calculation
   int minSize = Calculation::MinimalSize();
   assert(k_bufferSize > minSize);
   while (remainingBufferSize() < minSize || m_numberOfCalculations > k_maxNumberOfCalculations) {
     deleteLastCalculation();
   }
+  quiz_print("#u\n");
   char * newCalculationsLocation = slideCalculationsToEndOfBuffer();
   char * nextSerializationLocation = m_buffer;
-
+  quiz_print("#i\n");
   // Add the beginning of the calculation
   {
+    quiz_print("#h\n");
     /* Copy the begining of the calculation. The calculation minimal size is
      * available, so this memmove will not overide anything. */
     Calculation newCalc = Calculation();
     size_t calcSize = sizeof(newCalc);
+    quiz_print("# \n");
     memmove(nextSerializationLocation, &newCalc, calcSize);
     nextSerializationLocation += calcSize;
   }
-
+  quiz_print("#w\n");
   /* Add the input expression.
    * We do not store directly the text entered by the user because we do not
    * want to keep Ans symbol in the calculation store. */
   const char * inputSerialization = nextSerializationLocation;
   {
+    quiz_print("#E\n");
     Expression input = Expression::Parse(text, context).replaceSymbolWithExpression(Symbol::Ans(), ans);
     if (!pushSerializeExpression(input, nextSerializationLocation, &newCalculationsLocation)) {
       /* If the input does not fit in the store (event if the current
        * calculation is the only calculation), just replace the calculation with
        * undef. */
+      quiz_print("#/\n");
       return emptyStoreAndPushUndef(context, heightComputer);
     }
+    quiz_print("#r\n");
     nextSerializationLocation += strlen(nextSerializationLocation) + 1;
   }
-
+  quiz_print("#z\n");
   // Compute and serialize the outputs
   /* The serialized outputs are:
    * - the exact ouput
    * - the approximate output with the maximal number of significant digits
    * - the approximate output with the displayed number of significant digits */
   {
+    quiz_print("#n\n");
     // Outputs hold exact output, approximate output and its duplicate
     constexpr static int numberOfOutputs = Calculation::k_numberOfExpressions - 1;
     Expression outputs[numberOfOutputs] = {Expression(), Expression(), Expression()};
+    quiz_print("#s\n");
     PoincareHelpers::ParseAndSimplifyAndApproximate(inputSerialization, &(outputs[0]), &(outputs[1]), context, Poincare::ExpressionNode::SymbolicComputation::ReplaceAllSymbolsWithDefinitionsOrUndefined);
+    quiz_print("#P\n");
     if (ExamModeConfiguration::exactExpressionsAreForbidden(GlobalPreferences::sharedGlobalPreferences()->examMode()) && outputs[1].hasUnit()) {
       // Hide results with units on units if required by the exam mode configuration
+      quiz_print("#y\n");
       outputs[1] = Undefined::Builder();
     }
     outputs[2] = outputs[1];
+    quiz_print("#;\n");
     int numberOfSignificantDigits = Poincare::PrintFloat::k_numberOfStoredSignificantDigits;
+    quiz_print("#f\n");
     for (int i = 0; i < numberOfOutputs; i++) {
       if (i == numberOfOutputs - 1) {
         numberOfSignificantDigits = Poincare::Preferences::sharedPreferences()->numberOfSignificantDigits();
@@ -115,19 +130,23 @@ ExpiringPointer<Calculation> CalculationStore::push(const char * text, Context *
          * undef if it fits, else replace the whole calcualtion with undef. */
         Expression undef = Undefined::Builder();
         if (!pushSerializeExpression(undef, nextSerializationLocation, &newCalculationsLocation)) {
+          quiz_print("#x\n");
           return emptyStoreAndPushUndef(context, heightComputer);
         }
       }
       nextSerializationLocation += strlen(nextSerializationLocation) + 1;
     }
   }
+  quiz_print("#-\n");
 
   // Restore the other calculations
   size_t slideSize = m_buffer + k_bufferSize - newCalculationsLocation;
   memcpy(nextSerializationLocation, newCalculationsLocation, slideSize);
+  quiz_print("#=\n");
   m_slidedBuffer = false;
   m_numberOfCalculations++;
   m_bufferEnd+= nextSerializationLocation - m_buffer;
+  quiz_print("#t\n");
 
   // Clean the memoization
   resetMemoizedModelsAfterCalculationIndex(-1);
@@ -137,6 +156,7 @@ ExpiringPointer<Calculation> CalculationStore::push(const char * text, Context *
    * accordingly to the remaining size in the Poincare pool. Once it is, it
    * can't change anymore: the calculation heights are fixed which ensures that
    * scrolling computation is right. */
+  quiz_print("#§\n");
   calculation->setHeights(
       heightComputer(calculation.pointer(), false),
       heightComputer(calculation.pointer(), true));

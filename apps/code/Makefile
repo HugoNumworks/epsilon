@@ -27,9 +27,9 @@ app_code_test_src = $(addprefix apps/code/,\
   variable_box_controller.cpp \
 )
 
-tests_src += $(addprefix apps/code/test/,\
-  variable_box_controller.cpp\
-)
+# tests_src += $(addprefix apps/code/test/,\
+#   variable_box_controller.cpp\
+# )
 
 app_code_src += $(app_code_test_src)
 apps_src += $(app_code_src)

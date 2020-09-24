@@ -124,17 +124,17 @@ $(call object_for,liba/src/external/sqlite/mem5.c): CFLAGS += -w
 $(call object_for,liba/src/external/openbsd/%.c): SFLAGS := -Iliba/src/external/openbsd/include $(SFLAGS)
 $(call object_for,liba/src/external/openbsd/%.c): CFLAGS += -w
 
-tests_src += $(addprefix liba/test/, \
-  aeabi.c \
-  double.c \
-  ieee754.c \
-  long.c \
-  math.c \
-  setjmp.c \
-  stddef.c \
-  stdint.c \
-  strlcpy.c \
-)
+# tests_src += $(addprefix liba/test/, \
+#   aeabi.c \
+#   double.c \
+#   ieee754.c \
+#   long.c \
+#   math.c \
+#   setjmp.c \
+#   stddef.c \
+#   stdint.c \
+#   strlcpy.c \
+# )
 
 # The use of aeabi-rt could be made conditional to an AEABI target.
 # In practice we're always using liba on such a target.
