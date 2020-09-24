@@ -7,8 +7,6 @@ jobs:
     steps:
       - run: brew install numworks/tap/epsilon-sdk
       - uses: actions/checkout@v2
-      - run: make -j2 PLATFORM=simulator
-      - run: make -j2 PLATFORM=simulator epsilon.official.app
       - run: make -j2 PLATFORM=simulator ARCH=x86_64 test.headless.bin
       - run: output/release/simulator/macos/x86_64/test.headless.bin
       - uses: actions/upload-artifact@master
