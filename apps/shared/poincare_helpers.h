@@ -4,6 +4,7 @@
 #include <poincare/preferences.h>
 #include <poincare/print_float.h>
 #include <poincare/expression.h>
+#include <quiz.h>
 
 namespace Shared {
 
@@ -79,6 +80,7 @@ inline void Reduce(Poincare::Expression * e, Poincare::Context * context, Poinca
 inline void ParseAndSimplifyAndApproximate(const char * text, Poincare::Expression * simplifiedExpression, Poincare::Expression * approximateExpression, Poincare::Context * context, Poincare::ExpressionNode::SymbolicComputation symbolicComputation = Poincare::ExpressionNode::SymbolicComputation::ReplaceAllDefinedSymbolsWithDefinition) {
   Poincare::Preferences * preferences = Poincare::Preferences::sharedPreferences();
   Poincare::Preferences::ComplexFormat complexFormat = Poincare::Expression::UpdatedComplexFormatWithTextInput(preferences->complexFormat(), text);
+  quiz_print("##ParseAndSimplifyAndApproximate\n");
   Poincare::Expression::ParseAndSimplifyAndApproximate(text, simplifiedExpression, approximateExpression, context, complexFormat, preferences->angleUnit(), symbolicComputation);
 }
 

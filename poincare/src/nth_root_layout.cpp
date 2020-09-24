@@ -5,6 +5,8 @@
 #include <poincare/serialization_helper.h>
 #include <assert.h>
 #include <algorithm>
+#include <quiz.h>
+
 
 namespace Poincare {
 

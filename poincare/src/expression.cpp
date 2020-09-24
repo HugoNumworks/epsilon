@@ -11,6 +11,7 @@
 #include <cmath>
 #include <float.h>
 #include <utility>
+#include <quiz.h>
 
 #include "parsing/parser.h"
 
@@ -602,21 +603,25 @@ Expression Expression::ParseAndSimplify(const char * text, Context * context, Pr
 
 void Expression::ParseAndSimplifyAndApproximate(const char * text, Expression * simplifiedExpression, Expression * approximateExpression, Context * context, Preferences::ComplexFormat complexFormat, Preferences::AngleUnit angleUnit, ExpressionNode::SymbolicComputation symbolicComputation, ExpressionNode::UnitConversion unitConversion) {
   assert(simplifiedExpression);
+  quiz_print("##Expression::ParseAndSimplifyAndApproximate\n");
   Expression exp = Parse(text, context, false);
   if (exp.isUninitialized()) {
     *simplifiedExpression = Undefined::Builder();
     *approximateExpression = Undefined::Builder();
     return;
   }
+  quiz_print("##    simplifyAndApproximate\n");
   exp.simplifyAndApproximate(simplifiedExpression, approximateExpression, context, complexFormat, angleUnit, symbolicComputation, unitConversion);
   /* simplify might have been interrupted, in which case the resulting
    * expression is uninitialized, so we need to check that. */
   if (simplifiedExpression->isUninitialized()) {
+    quiz_print("##    parse\n");
     *simplifiedExpression = Parse(text, context);
     if (approximateExpression) {
       *approximateExpression = simplifiedExpression->approximate<double>(context, complexFormat, angleUnit);
     }
   }
+  quiz_print("##Expression::ParseAndSimplifyAndApproximate - end\n");
 }
 
 Expression Expression::simplify(ExpressionNode::ReductionContext reductionContext) {
