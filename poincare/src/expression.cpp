@@ -697,28 +697,39 @@ void Expression::beautifyAndApproximateScalar(Expression * simplifiedExpression,
 
 void Expression::simplifyAndApproximate(Expression * simplifiedExpression, Expression * approximateExpression, Context * context, Preferences::ComplexFormat complexFormat, Preferences::AngleUnit angleUnit, ExpressionNode::SymbolicComputation symbolicComputation, ExpressionNode::UnitConversion unitConversion) {
   assert(simplifiedExpression);
+  quiz_print("###simplifyAndApproximate##l\n");
   sSimplificationHasBeenInterrupted = false;
   // Step 1: we reduce the expression
   ExpressionNode::ReductionContext userReductionContext = ExpressionNode::ReductionContext(context, complexFormat, angleUnit, ExpressionNode::ReductionTarget::User, symbolicComputation, unitConversion);
+  quiz_print("###simplifyAndApproximate##c\n");
   Expression e = clone().reduce(userReductionContext);
+  quiz_print("###simplifyAndApproximate##e\n");
   if (sSimplificationHasBeenInterrupted) {
     sSimplificationHasBeenInterrupted = false;
+    quiz_print("###simplifyAndApproximate##m\n");
     ExpressionNode::ReductionContext systemReductionContext = ExpressionNode::ReductionContext(context, complexFormat, angleUnit, ExpressionNode::ReductionTarget::SystemForApproximation, symbolicComputation, unitConversion);
+    quiz_print("###simplifyAndApproximate##;\n");
     e = reduce(systemReductionContext);
   }
+  quiz_print("###simplifyAndApproximate##:\n");
   *simplifiedExpression = Expression();
   if (sSimplificationHasBeenInterrupted) {
+    quiz_print("###simplifyAndApproximate##q\n");
     return;
   }
   // Step 2: we approximate and beautify the reduced expression
   /* Case 1: the reduced expression is a matrix: We scan the matrix children to
    * beautify them with the right complex format. */
+  quiz_print("###simplifyAndApproximate##M\n");
   if (e.type() == ExpressionNode::Type::Matrix) {
     Matrix m = static_cast<Matrix &>(e);
+    quiz_print("###simplifyAndApproximate##r\n");
     *simplifiedExpression = Matrix::Builder();
     if (approximateExpression) {
+      quiz_print("###simplifyAndApproximate##f\n");
       *approximateExpression = Matrix::Builder();
     }
+    quiz_print("###simplifyAndApproximate##(\n");
     for (int i = 0; i < e.numberOfChildren(); i++) {
       Expression simplifiedChild;
       Expression approximateChild = approximateExpression ? Expression() : nullptr;
@@ -729,13 +740,17 @@ void Expression::simplifyAndApproximate(Expression * simplifiedExpression, Expre
         static_cast<Matrix *>(approximateExpression)->addChildAtIndexInPlace(approximateChild, i, i);
       }
     }
+    quiz_print("###simplifyAndApproximate##x\n");
     static_cast<Matrix *>(simplifiedExpression)->setDimensions(m.numberOfRows(), m.numberOfColumns());
     if (approximateExpression) {
+      quiz_print("###simplifyAndApproximate##~\n");
       static_cast<Matrix *>(approximateExpression)->setDimensions(m.numberOfRows(), m.numberOfColumns());
     }
+    quiz_print("###simplifyAndApproximate##{\n");
   } else {
     /* Case 3: the reduced expression is scalar or too complex to respect the
      * complex format. */
+    quiz_print("###simplifyAndApproximate##p\n");
     return e.beautifyAndApproximateScalar(simplifiedExpression, approximateExpression, userReductionContext, context, complexFormat, angleUnit);
   }
 }
