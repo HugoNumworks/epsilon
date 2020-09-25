@@ -1,7 +1,7 @@
 #include <poincare/arithmetic.h>
 #include <utility>
 #include <quiz.h>
-#include<string>
+#include <string>
 
 namespace Poincare {
 
@@ -63,6 +63,8 @@ int Arithmetic::PrimeFactorization(const Integer & n, Integer outputFactors[], I
   }
   quiz_print("###PrimeFactorization##}n\n");
   const char * primorial = "525896479052627740771371797072411912900610967452630";
+  quiz_print("###PrimeFactorization##1\n");
+  quiz_print(std::to_string(strlen(primorial).extractedInt()).c_str());
   const Integer primorial32(primorial, strlen(primorial), false);
   quiz_print("###PrimeFactorization##l \n");
   if (Integer::NaturalOrder(primorial32, m) < 0) {

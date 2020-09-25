@@ -13,6 +13,7 @@
 #include <poincare/multiplication.h>
 #include <cmath>
 #include <utility>
+#include <quiz.h>
 extern "C" {
 #include <stdlib.h>
 #include <string.h>
@@ -154,20 +155,27 @@ int integerFromCharDigit(char c) {
 Integer::Integer(const char * digits, size_t length, bool negative, Base b) :
   Integer(0)
 {
+  quiz_print("###Integer##1\n");
   if (digits != nullptr && UTF8Helper::CodePointIs(digits, '-')) {
+    quiz_print("###Integer##2\n");
     negative = true;
     digits++;
     length--;
   }
+  quiz_print("###Integer##3\n");
   if (digits != nullptr) {
     Integer base((int)b);
+    quiz_print("###Integer##4\n");
     for (size_t i = 0; i < length; i++) {
       *this = Multiplication(*this, base);
       *this = Addition(*this, Integer(integerFromCharDigit(*digits)));
       digits++;
     }
+    quiz_print("###Integer##5\n");
   }
+  quiz_print("###Integer##6\n");
   setNegative(isZero() ? false : negative);
+  quiz_print("###Integer##7\n");
 }
 
 // Serialization
