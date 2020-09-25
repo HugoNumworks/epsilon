@@ -1,6 +1,7 @@
 #include <poincare/parenthesis.h>
 #include <poincare/layout_helper.h>
 #include <poincare/serialization_helper.h>
+#include <quiz.h>
 
 namespace Poincare {
 
@@ -26,12 +27,18 @@ Evaluation<T> ParenthesisNode::templatedApproximate(Context * context, Preferenc
 }
 
 Expression Parenthesis::shallowReduce() {
+  quiz_print("###ParenthesisReduce##x\n");
   Expression e = Expression::defaultShallowReduce();
+  quiz_print("###ParenthesisReduce##f\n");
   if (e.isUndefined()) {
+    quiz_print("###ParenthesisReduce##e\n");
     return e;
   }
+  quiz_print("###ParenthesisReduce##g\n");
   Expression c = childAtIndex(0);
+  quiz_print("###ParenthesisReduce##h\n");
   replaceWithInPlace(c);
+  quiz_print("###ParenthesisReduce##j\n");
   return c;
 }
 

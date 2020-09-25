@@ -7,6 +7,7 @@
 #include <utility>
 #include <stdlib.h>
 #include <string.h>
+#include <quiz.h>
 
 namespace Poincare {
 
@@ -88,15 +89,21 @@ BasedInteger BasedInteger::Builder(const Integer & m, Integer::Base base) {
 
 Expression BasedInteger::shallowReduce() {
   // Turn BasedInteger into Rational
+  quiz_print("###BasedIntegerReduce##m\n");
   Integer numerator = node()->integer();
   Integer denominator(1);
   Expression result;
+  quiz_print("###BasedIntegerReduce##t\n");
   if (numerator.isOverflow() || denominator.isOverflow()) {
+    quiz_print("###BasedIntegerReduce##u\n");
     result = Number::FloatNumber(node()->integer().template approximate<double>());
   } else {
+    quiz_print("###BasedIntegerReduce##a\n");
     result = Rational::Builder(numerator, denominator);
   }
+  quiz_print("###BasedIntegerReduce##h\n");
   replaceWithInPlace(result);
+  quiz_print("###BasedIntegerReduce##f\n");
   return result;
 }
 

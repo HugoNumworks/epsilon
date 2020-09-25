@@ -28,6 +28,7 @@
 #include <cmath>
 #include <math.h>
 #include <utility>
+#include <quiz.h>
 
 namespace Poincare {
 
@@ -392,17 +393,19 @@ Expression Power::removeUnit(Expression * unit) {
 }
 
 Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContext) {
-
+  quiz_print("###PowerReduce##p{\n");
   {
     Expression e = Expression::defaultShallowReduce();
+    quiz_print("###PowerReduce##Ei\n");
     if (e.isUndefined()) {
+      quiz_print("###PowerReduce## r\n");
       return e;
     }
   }
-
+  quiz_print("###PowerReduce##}E\n");
   Expression base = childAtIndex(0);
   Expression index = childAtIndex(1);
-
+  quiz_print("###PowerReduce##Es\n");
   // Step 1: Handle the units
   {
     Expression indexUnit;
@@ -419,7 +422,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       }
     }
   }
-
+  quiz_print("###PowerReduce##}s\n");
   // Step 2: Handle matrices
   if (index.deepIsMatrix(reductionContext.context())) {
     return replaceWithUndefinedInPlace();
@@ -475,7 +478,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return result;
     }
   }
-
+  quiz_print("###PowerReduce##}E\n");
   Expression power = *this;
   /* Step 3: if both children are true unresolved complexes, the result is not
    * simplified. TODO? */
@@ -486,7 +489,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
   {
     return *this;
   }
-
+  quiz_print("###PowerReduce##}e\n");
   /* Step 4: Handle simple cases as x^0, x^1, 0^x and 1^x first, for 2 reasons:
    * - we can assert after this step that there is no division by 0:
    *   for instance, 0^(-2)->undefined
@@ -542,12 +545,12 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return result;
     }
   }
-
+  quiz_print("###PowerReduce##}s\n");
   /* We do not apply some rules to a^b if the parent node is a logarithm of same
    * base a. In this case there is a simplication of form
    * ln(e^(3^(1/2))->3^(1/2). */
   bool letPowerAtRoot = parentIsALogarithmOfSameBase();
-
+  quiz_print("###PowerReduce##bC\n");
   /* Step 5: we now bubble up ComplexCartesian, we handle different cases:
    * At least, one child is a ComplexCartesian and the other is either a
    * ComplexCartesian or real. */
@@ -612,7 +615,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return r;
     }
   }
-
+  quiz_print("###PowerReduce##}f\n");
 #if 0
   /* This was implemented when complex were not handled with the
    * ComplexCartesian node. It was used for instance to turn
@@ -639,7 +642,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
     }
   }*/
 #endif
-
+  quiz_print("###PowerReduce##ni\n");
   // Step 7: (±inf)^x = 0 or ±inf
   if (baseType == ExpressionNode::Type::Infinity) {
     Expression result;
@@ -662,7 +665,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return result.shallowReduce(reductionContext);
     }
   }
-
+  quiz_print("###PowerReduce##}i\n");
   // Step 8: p^q with p, q rationals --> a*b^c*exp(i*pi*d) with a, b, c, d rationals
   if (!letPowerAtRoot && baseType == ExpressionNode::Type::Rational) {
     Rational rationalBase = static_cast<Rational &>(base);
@@ -676,6 +679,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return simplifyRationalRationalPower(reductionContext);
     }
   }
+  quiz_print("###PowerReduce##}-\n");
   /* Step 9: (a)^(1/2) --> i*(-a)^(1/2)
    * WARNING: this rule true only if:
    * - a real: (-1*i)^(1/2) != i*i^(1/2)
@@ -702,6 +706,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return m1.shallowReduce(reductionContext);
     }
   }
+  quiz_print("###PowerReduce##}r\n");
   // Step 10: e^(r*i*Pi) with r rational --> cos(pi*r) + i*sin(pi*r)
   if (!letPowerAtRoot && isNthRootOfUnity()) {
     Expression i = index.childAtIndex(index.numberOfChildren()-2);
@@ -720,6 +725,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
     replaceWithInPlace(a);
     return a.shallowReduce(reductionContext);
   }
+  quiz_print("###PowerReduce##}a\n");
   // Step 11: x^log(y,x)->y if y > 0
   if (indexType == ExpressionNode::Type::Logarithm) {
     if (index.numberOfChildren() == 2 && base.isIdenticalTo(index.childAtIndex(1))) {
@@ -740,6 +746,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return result;
     }
   }
+  quiz_print("###PowerReduce##}l\n");
   /* Step 12: (a^b)^c -> a^(b*c)
    * This rule is not generally true: ((-2)^2)^(1/2) != (-2)^(2*1/2) = -2
    * This rule is true if:
@@ -790,7 +797,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return simplifyPowerPower(reductionContext);
     }
   }
-
+  quiz_print("###PowerReduce##}h\n");
   // Step 13: (a*b*c*...)^r ?
   if (!letPowerAtRoot && baseType == ExpressionNode::Type::Multiplication) {
     Multiplication multiplicationBase = static_cast<Multiplication &>(base);
@@ -832,6 +839,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       }
     }
   }
+  quiz_print("###PowerReduce##}q\n");
   /* Step 14: a^(p/q+c+...) -> Rational::Builder(a^p)*a^(1/q+c+...) with a
    * rational and a != 0 and p, q integers */
   if (!letPowerAtRoot
@@ -874,7 +882,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return m.shallowReduce(reductionContext);
     }
   }
-
+  quiz_print("###PowerReduce##}w\n");
   /* Step 15: (a0+a1+...am)^n with n integer
    *              -> a^n+?a^(n-1)*b+?a^(n-2)*b^2+...+b^n (Multinome)
    * We don't apply this rule when the target is the SystemForApproximation.
@@ -942,6 +950,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
       return result;
     }
   }
+  quiz_print("###PowerReduce##}f\n");
 #if 0
   /* We could use the Newton formula instead which is quicker but not immediate
    * to implement in the general case (Newton multinome). */
@@ -977,6 +986,7 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
     }
   }
 #endif
+  quiz_print("###PowerReduce##nr\n");
   return *this;
 }
 

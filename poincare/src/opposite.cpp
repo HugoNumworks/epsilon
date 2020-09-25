@@ -11,6 +11,7 @@
 #include <cmath>
 #include <stdlib.h>
 #include <utility>
+#include <quiz.h>
 
 namespace Poincare {
 
@@ -74,13 +75,20 @@ Expression OppositeNode::shallowReduce(ReductionContext reductionContext) {
 /* Simplification */
 
 Expression Opposite::shallowReduce(ExpressionNode::ReductionContext reductionContext) {
+  quiz_print("###OppositeReduce##:\n");
   Expression result = Expression::defaultShallowReduce();
+  quiz_print("###OppositeReduce##{\n");
   if (result.isUndefined()) {
+    quiz_print("###OppositeReduce##;\n");
     return result;
   }
+  quiz_print("###OppositeReduce##d\n");
   Expression child = result.childAtIndex(0);
+  quiz_print("###OppositeReduce##e\n");
   result = Multiplication::Builder(Rational::Builder(-1), child);
+  quiz_print("###OppositeReduce##s\n");
   replaceWithInPlace(result);
+  quiz_print("###OppositeReduce##g\n");
   return result.shallowReduce(reductionContext);
 }
 

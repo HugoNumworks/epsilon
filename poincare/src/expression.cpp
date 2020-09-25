@@ -702,6 +702,7 @@ void Expression::simplifyAndApproximate(Expression * simplifiedExpression, Expre
   // Step 1: we reduce the expression
   ExpressionNode::ReductionContext userReductionContext = ExpressionNode::ReductionContext(context, complexFormat, angleUnit, ExpressionNode::ReductionTarget::User, symbolicComputation, unitConversion);
   quiz_print("###simplifyAndApproximate##c\n");
+
   Expression e = clone().reduce(userReductionContext);
   quiz_print("###simplifyAndApproximate##e\n");
   if (sSimplificationHasBeenInterrupted) {

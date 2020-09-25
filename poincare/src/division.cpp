@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include <float.h>
+#include <quiz.h>
 
 namespace Poincare {
 
@@ -71,18 +72,26 @@ template<typename T> MatrixComplex<T> DivisionNode::computeOnMatrices(const Matr
 // Division
 
 Expression Division::shallowReduce(ExpressionNode::ReductionContext reductionContext) {
+  quiz_print("###DivisionReduce##{\n");
   {
     Expression e = Expression::defaultShallowReduce();
+    quiz_print("###DivisionReduce##}\n");
     if (e.isUndefined()) {
+      quiz_print("###DivisionReduce##;\n");
       return e;
     }
   }
+  quiz_print("###DivisionReduce##/\n");
   /* For matrices: we decided that A/B is computed as A = A/B * B so A/B = AB^-1
    * (it could have been A = B * A/B so A/B = B^-1*A). */
   Expression p = Power::Builder(childAtIndex(1), Rational::Builder(-1));
+  quiz_print("###DivisionReduce##:\n");
   Multiplication m = Multiplication::Builder(childAtIndex(0), p);
+  quiz_print("###DivisionReduce## \n");
   p.shallowReduce(reductionContext); // For instance: Division::Builder(2,1). p would be 1^(-1) which can be simplified
+  quiz_print("###DivisionReduce##a\n");
   replaceWithInPlace(m);
+  quiz_print("###DivisionReduce##n\n");
   return m.shallowReduce(reductionContext);
 }
 
