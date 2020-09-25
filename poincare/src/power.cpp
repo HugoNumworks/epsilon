@@ -1119,69 +1119,100 @@ Expression Power::simplifyRationalRationalPower(ExpressionNode::ReductionContext
 }
 
 Expression Power::CreateSimplifiedIntegerRationalPower(Integer i, Rational r, bool isDenominator, ExpressionNode::ReductionContext reductionContext) {
+  quiz_print("###CreateSimplifiedIntegerRationalPower##io;\n");
   assert(!i.isZero());
   assert(r.sign() == ExpressionNode::Sign::Positive);
+  quiz_print("###CreateSimplifiedIntegerRationalPower##O({\n");
   if (i.isOne()) {
+    quiz_print("###CreateSimplifiedIntegerRationalPower##aO)\n");
     return Rational::Builder(1);
   }
+  quiz_print("###CreateSimplifiedIntegerRationalPower##f}:\n");
   Integer factors[Arithmetic::k_maxNumberOfPrimeFactors];
+  quiz_print("###CreateSimplifiedIntegerRationalPower##crm\n");
   Integer coefficients[Arithmetic::k_maxNumberOfPrimeFactors];
+  quiz_print("###CreateSimplifiedIntegerRationalPower##er \n");
   int numberOfPrimeFactors = Arithmetic::PrimeFactorization(i, factors, coefficients, Arithmetic::k_maxNumberOfPrimeFactors);
+  quiz_print("###CreateSimplifiedIntegerRationalPower##em \n");
   if (numberOfPrimeFactors < 0) {
     /* We could not break i in prime factors (it might take either too many
      * factors or too much time). */
+    quiz_print("###CreateSimplifiedIntegerRationalPower##ote\n");
     Expression rClone = r.clone().setSign(isDenominator ? ExpressionNode::Sign::Negative : ExpressionNode::Sign::Positive, reductionContext);
+    quiz_print("###CreateSimplifiedIntegerRationalPower##oso\n");
     return Power::Builder(Rational::Builder(i), rClone);
   }
-
+  quiz_print("###CreateSimplifiedIntegerRationalPower##r};\n");
   Integer r1(1);
   Integer r2(1);
+  quiz_print("###CreateSimplifiedIntegerRationalPower## r<\n");
   for (int index = 0; index < numberOfPrimeFactors; index++) {
     Integer n = Integer::Multiplication(coefficients[index], r.signedIntegerNumerator());
     IntegerDivision div = Integer::Division(n, r.integerDenominator());
     r1 = Integer::Multiplication(r1, Integer::Power(factors[index], div.quotient));
     r2 = Integer::Multiplication(r2, Integer::Power(factors[index], div.remainder));
   }
+  quiz_print("###CreateSimplifiedIntegerRationalPower##s}i\n");
   if (r2.isOverflow() || r1.isOverflow()) {
+    quiz_print("###CreateSimplifiedIntegerRationalPower##eso\n");
     // we overflow Integer at one point: we abort
     return Power::Builder(Rational::Builder(i), r.clone());
   }
+  quiz_print("###CreateSimplifiedIntegerRationalPower## }i\n");
   Rational p1 = Rational::Builder(r2);
   Integer oneExponent = isDenominator ? Integer(-1) : Integer(1);
   Integer rDenominator = r.integerDenominator();
+  quiz_print("###CreateSimplifiedIntegerRationalPower## ri\n");
   Rational p2 = Rational::Builder(oneExponent, rDenominator);
   Power p = Power::Builder(p1, p2);
+  quiz_print("###CreateSimplifiedIntegerRationalPower##sp)\n");
   if (r1.isEqualTo(Integer(1)) && !i.isNegative()) {
+    quiz_print("###CreateSimplifiedIntegerRationalPower##ts;\n");
     return std::move(p);
   }
+  quiz_print("###CreateSimplifiedIntegerRationalPower##o};\n");
   Integer one(1);
   Rational r3 = isDenominator ? Rational::Builder(one, r1) : Rational::Builder(r1);
+  quiz_print("###CreateSimplifiedIntegerRationalPower##cai\n");
   Multiplication m = Multiplication::Builder();
   m.addChildAtIndexInPlace(r3, 0, 0);
+  quiz_print("###CreateSimplifiedIntegerRationalPower##ih{\n");
   if (!r2.isOne()) {
+    quiz_print("###CreateSimplifiedIntegerRationalPower##li,\n");
     m.addChildAtIndexInPlace(p, 1, 1);
   }
+  quiz_print("###CreateSimplifiedIntegerRationalPower##N}{\n");
   if (i.isNegative()) {
+    quiz_print("###CreateSimplifiedIntegerRationalPower##cNe\n");
     if (reductionContext.complexFormat()  == Preferences::ComplexFormat::Real) {
+      quiz_print("###CreateSimplifiedIntegerRationalPower##ac/\n");
       /* On real numbers (-1)^(p/q) =
        * - 1 if p is even
        * - -1 if p and q are odd
        * - has no real solution otherwise */
       if (!r.unsignedIntegerNumerator().isEven()) {
+        quiz_print("###CreateSimplifiedIntegerRationalPower##tn.\n");
         if (r.integerDenominator().isEven()) {
+          quiz_print("###CreateSimplifiedIntegerRationalPower##nt;\n");
           return Unreal::Builder();
         } else {
+          quiz_print("###CreateSimplifiedIntegerRationalPower##l{a\n");
           m.addChildAtIndexInPlace(Rational::Builder(-1), 0, m.numberOfChildren());
         }
       }
     } else {
+      quiz_print("###CreateSimplifiedIntegerRationalPower##m{p\n");
       /* On complex numbers, we pick the first root (-1)^(p/q) = e^(i*pi*p/q) */
       r.setSign(isDenominator ? ExpressionNode::Sign::Negative : ExpressionNode::Sign::Positive);
       Expression exp = CreateComplexExponent(r, reductionContext);
+      quiz_print("###CreateSimplifiedIntegerRationalPower##lsx\n");
       m.addChildAtIndexInPlace(exp, m.numberOfChildren(), m.numberOfChildren());
+      quiz_print("###CreateSimplifiedIntegerRationalPower##lhn\n");
       exp.shallowReduce(reductionContext);
+      quiz_print("###CreateSimplifiedIntegerRationalPower##}a}\n");
     }
   }
+  quiz_print("###CreateSimplifiedIntegerRationalPower##.}u\n");
   return m.shallowReduce(reductionContext);
 }
 
