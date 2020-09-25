@@ -167,6 +167,7 @@ Integer::Integer(const char * digits, size_t length, bool negative, Base b) :
     Integer base((int)b);
     quiz_print("###Integer##4\n");
     for (size_t i = 0; i < length; i++) {
+      quiz_print("-");
       *this = Multiplication(*this, base);
       *this = Addition(*this, Integer(integerFromCharDigit(*digits)));
       digits++;
