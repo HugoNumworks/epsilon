@@ -1,5 +1,7 @@
 #include <poincare/arithmetic.h>
 #include <utility>
+#include <quiz.h>
+#include<string>
 
 namespace Poincare {
 
@@ -47,32 +49,38 @@ const short primeFactors[Arithmetic::k_numberOfPrimeFactors] = {2, 3, 5, 7, 11, 
 // we can go to 7907*7907 = 62 520 649
 int Arithmetic::PrimeFactorization(const Integer & n, Integer outputFactors[], Integer outputCoefficients[], int outputLength) {
   assert(!n.isOverflow());
-
+  quiz_print("###PrimeFactorization#######\n");
+  quiz_print(std::to_string(n.extractedInt()).c_str());
   // Compute the absolute value of n
   Integer m = n;
   m.setNegative(false);
-
+  quiz_print("###PrimeFactorization##;b\n");
   /* First we look for prime divisors in the table primeFactors (to speed up
    * the prime factorization for low numbers). When k_numberOfPrimeFactors is
    * overflow, try every number as divisor. */
   if (Integer::NaturalOrder(m, Integer(1)) == 0) {
     return 0;
   }
+  quiz_print("###PrimeFactorization##}n\n");
   const char * primorial = "525896479052627740771371797072411912900610967452630";
   const Integer primorial32(primorial, strlen(primorial), false);
+  quiz_print("###PrimeFactorization##l \n");
   if (Integer::NaturalOrder(primorial32, m) < 0) {
     /* Special case 1: We do not want to break i in prime factor because it
      * might take too many factors... More than k_maxNumberOfPrimeFactors.
      * outputCoefficients[0] is set to -1 to indicate a special case. */
+    quiz_print("###PrimeFactorization## t\n");
     return -1;
   }
-
+  quiz_print("###PrimeFactorization##}t\n");
   int t = 0; // n prime factor index
   int k = 0; // prime factor index
   Integer testedPrimeFactor((int)primeFactors[k]); // prime factor
+  quiz_print("###PrimeFactorization##mt\n");
   outputFactors[t] = testedPrimeFactor;
   IntegerDivision d = {.quotient = 0, .remainder = 0};
   bool stopCondition;
+  quiz_print("###PrimeFactorization##; \n");
   do {
     stopCondition = Integer::NaturalOrder(Integer::Power(outputFactors[t], Integer(2)), m) < 0;
     d = Integer::Division(m, testedPrimeFactor);
@@ -80,6 +88,7 @@ int Arithmetic::PrimeFactorization(const Integer & n, Integer outputFactors[], I
       outputCoefficients[t] = Integer::Addition(outputCoefficients[t], Integer(1));
       m = d.quotient;
       if (m.isOne()) {
+        quiz_print("###PrimeFactorization##{t\n");
         return t+1;
       }
       continue;
@@ -91,15 +100,19 @@ int Arithmetic::PrimeFactorization(const Integer & n, Integer outputFactors[], I
     testedPrimeFactor = k < k_numberOfPrimeFactors ? Integer((int)primeFactors[k]) : Integer::Addition(testedPrimeFactor, Integer(1));
     outputFactors[t] = testedPrimeFactor;
   } while (stopCondition && Integer::NaturalOrder(testedPrimeFactor,Integer(k_biggestPrimeFactor)) < 0);
+  quiz_print("###PrimeFactorization##: \n");
   if (Integer::NaturalOrder(Integer::Power(Integer(k_biggestPrimeFactor), Integer(2)), m) < 0) {
+    quiz_print("###PrimeFactorization##o \n");
     /* Special case 2: We do not want to break i in prime factor because it
      * take too much time: the prime factor that should be tested is above
      * k_biggestPrimeFactor.
      * outputCoefficients[0] is set to -1 to indicate a special case. */
     return -2;
   }
+  quiz_print("###PrimeFactorization##qt\n");
   outputFactors[t] = m;
   outputCoefficients[t] = Integer::Addition(outputCoefficients[t], Integer(1));
+  quiz_print("###PrimeFactorization##dt\n");
   return t+1;
 }
 
