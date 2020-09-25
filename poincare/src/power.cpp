@@ -668,16 +668,21 @@ Expression Power::shallowReduce(ExpressionNode::ReductionContext reductionContex
   quiz_print("###PowerReduce##}i\n");
   // Step 8: p^q with p, q rationals --> a*b^c*exp(i*pi*d) with a, b, c, d rationals
   if (!letPowerAtRoot && baseType == ExpressionNode::Type::Rational) {
+    quiz_print("###PowerReduce##}i1\n");
     Rational rationalBase = static_cast<Rational &>(base);
     // p^q with p, q rationals
     // TODO: maybe reduce Number^Rational?
     if (indexType == ExpressionNode::Type::Rational) {
+      quiz_print("###PowerReduce##}i2\n");
       Rational rationalIndex = static_cast<Rational &>(index);
       if (RationalExponentShouldNotBeReduced(rationalBase, rationalIndex)) {
+        quiz_print("###PowerReduce##}i3\n");
         return *this;
       }
+      quiz_print("###PowerReduce##}i4\n");
       return simplifyRationalRationalPower(reductionContext);
     }
+    quiz_print("###PowerReduce##}i5\n");
   }
   quiz_print("###PowerReduce##}-\n");
   /* Step 9: (a)^(1/2) --> i*(-a)^(1/2)
@@ -1071,28 +1076,45 @@ Expression Power::simplifyPowerMultiplication(ExpressionNode::ReductionContext r
 
 Expression Power::simplifyRationalRationalPower(ExpressionNode::ReductionContext reductionContext) {
   // this is a^b with a, b rationals
+  quiz_print("###simplifyRationalRationalPower##i^/\n");
   Rational a = childAtIndex(0).convert<Rational>();
   Rational b = childAtIndex(1).convert<Rational>();
+  quiz_print("###simplifyRationalRationalPower##( R\n");
   if (b.isInteger()) {
+    quiz_print("###simplifyRationalRationalPower##ir \n");
     Rational r = Rational::IntegerPower(a, b.signedIntegerNumerator());
+    quiz_print("###simplifyRationalRationalPower##(wR\n");
     if (r.numeratorOrDenominatorIsInfinity()) {
+      quiz_print("###simplifyRationalRationalPower##ur \n");
       return Power::Builder(a, b);
     }
+    quiz_print("###simplifyRationalRationalPower##l}}\n");
     replaceWithInPlace(r);
+    quiz_print("###simplifyRationalRationalPower##unr\n");
     return std::move(r);
   }
+  quiz_print("###simplifyRationalRationalPower##r}}\n");
   Expression n;
   Expression d;
+  quiz_print("###simplifyRationalRationalPower##(;E\n");
   if (b.sign() == ExpressionNode::Sign::Negative) {
+    quiz_print("###simplifyRationalRationalPower##e= \n");
     b.setSign(ExpressionNode::Sign::Positive);
+    quiz_print("###simplifyRationalRationalPower## pb\n");
     n = CreateSimplifiedIntegerRationalPower(a.integerDenominator(), b, false, reductionContext);
+    quiz_print("###simplifyRationalRationalPower## mn\n");
     d = CreateSimplifiedIntegerRationalPower(a.signedIntegerNumerator(), b, true, reductionContext);
   } else {
+    quiz_print("###simplifyRationalRationalPower## {e\n");
     n = CreateSimplifiedIntegerRationalPower(a.signedIntegerNumerator(), b, false, reductionContext);
+    quiz_print("###simplifyRationalRationalPower## mn\n");
     d = CreateSimplifiedIntegerRationalPower(a.integerDenominator(), b, true, reductionContext);
   }
+  quiz_print("###simplifyRationalRationalPower##t}}\n");
   Multiplication m = Multiplication::Builder(n, d);
+  quiz_print("###simplifyRationalRationalPower##loM\n");
   replaceWithInPlace(m);
+  quiz_print("###simplifyRationalRationalPower##unr\n");
   return m.shallowReduce(reductionContext);
 }
 
@@ -1418,7 +1440,9 @@ const Rational Power::RationalFactorInExpression(const Expression & e) {
 }
 
 bool Power::RationalExponentShouldNotBeReduced(const Rational & b, const Rational & r) {
+  quiz_print("###RationalExponentShouldNotBeReduced##11\n");
   if (r.isMinusOne()) {
+    quiz_print("###RationalExponentShouldNotBeReduced##22\n");
     return false;
   }
   /* We check that the simplification does not involve too complex power of
@@ -1431,16 +1455,23 @@ bool Power::RationalExponentShouldNotBeReduced(const Rational & b, const Rationa
    * complexity is apportionned to the number of decimal digits in the smallest
    * integer. */
   Integer maxIntegerExponent = r.unsignedIntegerNumerator();
+  quiz_print("###RationalExponentShouldNotBeReduced##ra\n");
   if (Integer::NaturalOrder(maxIntegerExponent, Integer(k_maxExactPowerMatrix)) > 0) {
+    quiz_print("###RationalExponentShouldNotBeReduced##r(\n");
     return true;
   }
-
+  quiz_print("###RationalExponentShouldNotBeReduced##>}\n");
   double index = maxIntegerExponent.approximate<double>();
+  quiz_print("###RationalExponentShouldNotBeReduced##me\n");
   double powerNumerator = std::pow(b.unsignedIntegerNumerator().approximate<double>(), index);
+  quiz_print("###RationalExponentShouldNotBeReduced##tu\n");
   double powerDenominator = std::pow(b.integerDenominator().approximate<double>(), index);
+  quiz_print("###RationalExponentShouldNotBeReduced##na\n");
   if (std::isnan(powerNumerator) || std::isnan(powerDenominator) || std::isinf(powerNumerator) || std::isinf(powerDenominator)) {
+    quiz_print("###RationalExponentShouldNotBeReduced##ro\n");
     return true;
   }
+  quiz_print("###RationalExponentShouldNotBeReduced##l}\n");
   return false;
 }
 
