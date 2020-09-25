@@ -155,28 +155,29 @@ int integerFromCharDigit(char c) {
 Integer::Integer(const char * digits, size_t length, bool negative, Base b) :
   Integer(0)
 {
-  quiz_print("###Integer##1\n");
+  quiz_print("###Integer##1");
   if (digits != nullptr && UTF8Helper::CodePointIs(digits, '-')) {
-    quiz_print("###Integer##2\n");
+    quiz_print("###Integer##2");
     negative = true;
     digits++;
     length--;
   }
-  quiz_print("###Integer##3\n");
+  quiz_print("###Integer##3");
   if (digits != nullptr) {
     Integer base((int)b);
-    quiz_print("###Integer##4\n");
+    quiz_print("###Integer##4");
     for (size_t i = 0; i < length; i++) {
       quiz_print("-");
       *this = Multiplication(*this, base);
+      quiz_print("|");
       *this = Addition(*this, Integer(integerFromCharDigit(*digits)));
       digits++;
     }
-    quiz_print("###Integer##5\n");
+    quiz_print("###Integer##5");
   }
-  quiz_print("###Integer##6\n");
+  quiz_print("###Integer##6");
   setNegative(isZero() ? false : negative);
-  quiz_print("###Integer##7\n");
+  quiz_print("###Integer##7");
 }
 
 // Serialization
@@ -460,10 +461,12 @@ Integer Integer::Factorial(const Integer & i) {
 }
 
 Integer Integer::addition(const Integer & a, const Integer & b, bool inverseBNegative, bool oneDigitOverflow) {
+  quiz_print("###addition##-1");
   bool bNegative = (inverseBNegative ? !b.m_negative : b.m_negative);
   if (a.m_negative == bNegative) {
     Integer us = usum(a, b, false, oneDigitOverflow);
     us.setNegative(a.m_negative);
+    quiz_print("###addition##-2");
     return us;
   } else {
     /* The signs are different, this is in fact a subtraction
@@ -474,10 +477,12 @@ Integer Integer::addition(const Integer & a, const Integer & b, bool inverseBNeg
     if (ucmp(a, b) >= 0) {
       Integer us = usum(a, b, true, oneDigitOverflow);
       us.setNegative(a.m_negative);
+      quiz_print("###addition##-3");
       return us;
     } else {
       Integer us = usum(b, a, true, oneDigitOverflow);
       us.setNegative(bNegative);
+      quiz_print("###addition##-4");
       return us;
     }
   }
@@ -485,13 +490,14 @@ Integer Integer::addition(const Integer & a, const Integer & b, bool inverseBNeg
 
 Integer Integer::multiplication(const Integer & a, const Integer & b, bool oneDigitOverflow) {
   if (a.isOverflow() || b.isOverflow()) {
+    quiz_print("###multiplication##-1");
     return Integer::Overflow(a.m_negative != b.m_negative);
   }
 
   uint8_t size = std::min(a.numberOfDigits() + b.numberOfDigits(), k_maxNumberOfDigits + oneDigitOverflow); // Enable overflowing of 1 digit
-
+  quiz_print("###multiplication##11");
   memset(s_workingBuffer, 0, size*sizeof(native_uint_t));
-
+  quiz_print("###multiplication##12");
   double_native_uint_t carry = 0;
   for (uint8_t i = 0; i < a.numberOfDigits(); i++) {
     double_native_uint_t aDigit = a.digit(i);
@@ -501,13 +507,16 @@ Integer Integer::multiplication(const Integer & a, const Integer & b, bool oneDi
       /* The fact that aDigit and bDigit are double_native is very important,
        * otherwise the product might end up being computed on single_native size
        * and then zero-padded. */
+      quiz_print("###multiplication##}1");
       double_native_uint_t p = aDigit*bDigit + carry + (double_native_uint_t)(s_workingBuffer[i+j]); // TODO: Prove it cannot overflow double_native type
+      quiz_print("###multiplication##}2");
       native_uint_t * l = (native_uint_t *)&p;
       if (i+j < (uint8_t) k_maxNumberOfDigits+oneDigitOverflow) {
         s_workingBuffer[i+j] = l[0];
       } else {
         if (l[0] != 0) {
           // Overflow the largest Integer
+          quiz_print("###multiplication##-2");
           return Integer::Overflow(a.m_negative != b.m_negative);
         }
       }
@@ -518,6 +527,7 @@ Integer Integer::multiplication(const Integer & a, const Integer & b, bool oneDi
     } else {
       if (carry != 0) {
         // Overflow the largest Integer
+        quiz_print("###multiplication##-3");
         return Integer::Overflow(a.m_negative != b.m_negative);
       }
     }
@@ -525,6 +535,7 @@ Integer Integer::multiplication(const Integer & a, const Integer & b, bool oneDi
   while (size>0 && s_workingBuffer[size-1] == 0) {
     size--;
   }
+  quiz_print("###multiplication##-4");
   return BuildInteger(s_workingBuffer, size, a.m_negative != b.m_negative, oneDigitOverflow);
 }
 
