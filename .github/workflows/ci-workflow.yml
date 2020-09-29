@@ -3,7 +3,7 @@ on: [pull_request, push]
 
 jobs:
   macos:
-    runs-on: macOS 10.14
+    runs-on: macos-10.14
     steps:
       - run: brew install numworks/tap/epsilon-sdk
       - uses: actions/checkout@v2
