@@ -13,9 +13,9 @@
 #include <sys/resource.h>
 #endif
 
-constexpr int kHeapSize = 131072;
+constexpr int kHeapSize = 131072*10;
 #ifdef NDEBUG
-constexpr int kStackSize = 32768;
+constexpr int kStackSize = 32768*10;
 #else
 constexpr int kStackSize = 32768*10; // In DEBUG mode, we increase the stack to be able to pass the tests
 #endif
