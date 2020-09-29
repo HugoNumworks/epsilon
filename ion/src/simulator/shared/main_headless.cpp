@@ -13,7 +13,7 @@
 #include <sys/resource.h>
 #endif
 
-constexpr int kHeapSize = 131072*10;
+constexpr int kHeapSize = 131072;
 #ifdef NDEBUG
 constexpr int kStackSize = 32768*10;
 #else
