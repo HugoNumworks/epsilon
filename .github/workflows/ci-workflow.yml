@@ -3,8 +3,11 @@ on: [pull_request, push]
 
 jobs:
   macos:
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
+      - uses: maxim-lobanov/setup-xcode@v1.1
+        with:
+          xcode-version: 11.6
       - run: brew install numworks/tap/epsilon-sdk
       - uses: actions/checkout@v2
       - run: make -j2 PLATFORM=simulator ARCH=x86_64 test.headless.bin
