@@ -489,11 +489,12 @@ Integer Integer::addition(const Integer & a, const Integer & b, bool inverseBNeg
 }
 
 Integer Integer::multiplication(const Integer & a, const Integer & b, bool oneDigitOverflow) {
+  quiz_print("###multiplication##88");
   if (a.isOverflow() || b.isOverflow()) {
     quiz_print("###multiplication##-1");
     return Integer::Overflow(a.m_negative != b.m_negative);
   }
-
+  quiz_print("###multiplication##77");
   uint8_t size = std::min(a.numberOfDigits() + b.numberOfDigits(), k_maxNumberOfDigits + oneDigitOverflow); // Enable overflowing of 1 digit
   quiz_print("###multiplication##11");
   memset(s_workingBuffer, 0, size*sizeof(native_uint_t));
