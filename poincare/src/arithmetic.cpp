@@ -51,6 +51,10 @@ int Arithmetic::PrimeFactorization(const Integer & n, Integer outputFactors[], I
   assert(!n.isOverflow());
   quiz_print("###PrimeFactorization#######");
   quiz_print(std::to_string(n.extractedInt()).c_str());
+  if (n.extractedInt() == 2) {
+    outputFactors[0] = Integer::Addition(outputCoefficients[0], Integer(1));
+    outputFactors[0] = Integer(1);
+  }
   // Compute the absolute value of n
   Integer m = n;
   m.setNegative(false);
