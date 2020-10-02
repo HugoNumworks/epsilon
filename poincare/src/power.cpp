@@ -1127,12 +1127,16 @@ Expression Power::CreateSimplifiedIntegerRationalPower(Integer i, Rational r, bo
     quiz_print("###CreateSimplifiedIntegerRationalPower##aO)\n");
     return Rational::Builder(1);
   }
+  int maxNumberOfPrimeFactors = Arithmetic::k_maxNumberOfPrimeFactors;
+  if (i.extractedInt() <= 11) {
+    maxNumberOfPrimeFactors = 5;
+  }
   quiz_print("###CreateSimplifiedIntegerRationalPower##f}:\n");
-  Integer factors[Arithmetic::k_maxNumberOfPrimeFactors];
+  Integer factors[maxNumberOfPrimeFactors];
   quiz_print("###CreateSimplifiedIntegerRationalPower##crm\n");
-  Integer coefficients[Arithmetic::k_maxNumberOfPrimeFactors];
+  Integer coefficients[maxNumberOfPrimeFactors];
   quiz_print("###CreateSimplifiedIntegerRationalPower##er \n");
-  int numberOfPrimeFactors = Arithmetic::PrimeFactorization(i, factors, coefficients, Arithmetic::k_maxNumberOfPrimeFactors);
+  int numberOfPrimeFactors = Arithmetic::PrimeFactorization(i, factors, coefficients, maxNumberOfPrimeFactors);
   quiz_print("###CreateSimplifiedIntegerRationalPower##em \n");
   if (numberOfPrimeFactors < 0) {
     /* We could not break i in prime factors (it might take either too many

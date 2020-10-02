@@ -15,7 +15,7 @@
 
 constexpr int kHeapSize = 131072;
 #ifdef NDEBUG
-constexpr int kStackSize = 32768*10;
+constexpr int kStackSize = 32768;
 #else
 constexpr int kStackSize = 32768*10; // In DEBUG mode, we increase the stack to be able to pass the tests
 #endif
