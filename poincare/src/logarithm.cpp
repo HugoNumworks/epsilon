@@ -332,9 +332,8 @@ Integer Logarithm::simplifyLogarithmIntegerBaseInteger(Integer i, Integer & base
 Expression Logarithm::splitLogarithmInteger(Integer i, bool isDenominator, ExpressionNode::ReductionContext reductionContext) {
   assert(!i.isZero());
   assert(!i.isNegative());
-  Integer factors[Arithmetic::k_maxNumberOfPrimeFactors];
-  Integer coefficients[Arithmetic::k_maxNumberOfPrimeFactors];
-  int numberOfPrimeFactors = Arithmetic::PrimeFactorization(i, factors, coefficients, Arithmetic::k_maxNumberOfPrimeFactors);
+  Arithmetic arithmetic = Arithmetic();
+  int numberOfPrimeFactors = arithmetic.PrimeFactorization(i);
   if (numberOfPrimeFactors == 0) {
     return Rational::Builder(0);
   }
@@ -352,11 +351,11 @@ Expression Logarithm::splitLogarithmInteger(Integer i, bool isDenominator, Expre
   Addition a = Addition::Builder();
   for (int index = 0; index < numberOfPrimeFactors; index++) {
     if (isDenominator) {
-      coefficients[index].setNegative(true);
+      arithmetic.getFactorizationCoefficient(index)->setNegative(true);
     }
     Logarithm e = clone().convert<Logarithm>();
-    e.replaceChildAtIndexInPlace(0, Rational::Builder(factors[index]));
-    Multiplication m = Multiplication::Builder(Rational::Builder(coefficients[index]), e);
+    e.replaceChildAtIndexInPlace(0, Rational::Builder(*arithmetic.getFactorizationFactor(index)));
+    Multiplication m = Multiplication::Builder(Rational::Builder(*arithmetic.getFactorizationCoefficient(index)), e);
     e.simpleShallowReduce(reductionContext.context(), reductionContext.complexFormat(), reductionContext.angleUnit());
     a.addChildAtIndexInPlace(m, a.numberOfChildren(), a.numberOfChildren());
     m.shallowReduce(reductionContext);
